@@ -1,8 +1,8 @@
 package rabbitmq
 
 import (
-	"github.com/streadway/amqp"
 	"github.com/gin-gonic/gin/json"
+	"github.com/streadway/amqp"
 )
 
 type RabbitMQ struct {
@@ -12,6 +12,7 @@ type RabbitMQ struct {
 }
 
 func New(s string) *RabbitMQ {
+
 	conn, err := amqp.Dial(s)
 	if err != nil {
 		panic(err)
@@ -30,7 +31,6 @@ func New(s string) *RabbitMQ {
 		false,
 		nil,
 	)
-
 	if err != nil {
 		panic(err)
 	}
@@ -42,6 +42,7 @@ func New(s string) *RabbitMQ {
 }
 
 func (mq *RabbitMQ) Bind(exchange string) {
+
 	err := mq.channel.QueueBind(
 		mq.Name,
 		"",
@@ -49,7 +50,6 @@ func (mq *RabbitMQ) Bind(exchange string) {
 		false,
 		nil,
 	)
-
 	if err != nil {
 		panic(err)
 	}
@@ -58,6 +58,7 @@ func (mq *RabbitMQ) Bind(exchange string) {
 }
 
 func (mq *RabbitMQ) Send(queue string, body interface{}) {
+
 	str, err := json.Marshal(body)
 	if err != nil {
 		panic(err)
@@ -70,7 +71,7 @@ func (mq *RabbitMQ) Send(queue string, body interface{}) {
 		false,
 		amqp.Publishing{
 			ReplyTo: mq.Name,
-			Body:    str,},
+			Body:    str},
 	)
 
 	if err != nil {
@@ -79,6 +80,7 @@ func (mq *RabbitMQ) Send(queue string, body interface{}) {
 }
 
 func (mq *RabbitMQ) Publish(exchange string, body interface{}) {
+
 	str, err := json.Marshal(body)
 	if err != nil {
 		panic(err)
@@ -99,7 +101,8 @@ func (mq *RabbitMQ) Publish(exchange string, body interface{}) {
 	}
 }
 
-func (mq *RabbitMQ) Consume() <- chan amqp.Delivery{
+func (mq *RabbitMQ) Consume() <-chan amqp.Delivery {
+
 	c, err := mq.channel.Consume(
 		mq.Name,
 		"",
@@ -116,7 +119,7 @@ func (mq *RabbitMQ) Consume() <- chan amqp.Delivery{
 	return c
 }
 
-func (mq *RabbitMQ) Close()  {
+func (mq *RabbitMQ) Close() {
 
 	err := mq.channel.Close()
 	if err != nil {
