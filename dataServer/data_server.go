@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/scaat/whale/objects"
+	"github.com/scaat/whale/dataServer/objects"
 )
 
 func main() {
