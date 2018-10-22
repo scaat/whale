@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"github.com/streadway/amqp"
+	"github.com/gin-gonic/gin/json"
 )
 
 type RabbitMQ struct {
@@ -56,4 +57,23 @@ func (mq *RabbitMQ) Bind(exchange string) {
 	mq.exchange = exchange
 }
 
+func (mq *RabbitMQ) Send(queue string, body interface{}) {
+	str, err := json.Marshal(body)
+	if err != nil {
+		panic(err)
+	}
 
+	err = mq.channel.Publish(
+		"",
+		queue,
+		false,
+		false,
+		amqp.Publishing{
+			ReplyTo: mq.Name,
+			Body:    str,},
+	)
+
+	if err != nil {
+		panic(err)
+	}
+}
