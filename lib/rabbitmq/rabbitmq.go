@@ -98,3 +98,20 @@ func (mq *RabbitMQ) Publish(exchange string, body interface{}) {
 		panic(err)
 	}
 }
+
+func (mq *RabbitMQ) Consume() <- chan amqp.Delivery{
+	c, err := mq.channel.Consume(
+		mq.Name,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	return c
+}
