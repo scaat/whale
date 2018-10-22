@@ -39,3 +39,21 @@ func New(s string) *RabbitMQ {
 	mq.Name = q.Name
 	return mq
 }
+
+func (mq *RabbitMQ) Bind(exchange string) {
+	err := mq.channel.QueueBind(
+		mq.Name,
+		"",
+		exchange,
+		false,
+		nil,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	mq.exchange = exchange
+}
+
+
