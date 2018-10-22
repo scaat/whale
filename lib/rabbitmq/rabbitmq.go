@@ -115,3 +115,12 @@ func (mq *RabbitMQ) Consume() <- chan amqp.Delivery{
 
 	return c
 }
+
+func (mq *RabbitMQ) Close()  {
+
+	err := mq.channel.Close()
+	if err != nil {
+		panic(err)
+	}
+
+}
