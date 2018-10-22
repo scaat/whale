@@ -77,3 +77,24 @@ func (mq *RabbitMQ) Send(queue string, body interface{}) {
 		panic(err)
 	}
 }
+
+func (mq *RabbitMQ) Publish(exchange string, body interface{}) {
+	str, err := json.Marshal(body)
+	if err != nil {
+		panic(err)
+	}
+
+	err = mq.channel.Publish(
+		exchange,
+		"",
+		false,
+		false,
+		amqp.Publishing{
+			ReplyTo: mq.Name,
+			Body:    str,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+}
